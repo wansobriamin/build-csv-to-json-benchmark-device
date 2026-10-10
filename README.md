@@ -47,7 +47,7 @@ python -m build.build_cpu_database
                 ▼
         data/staging/*.csv ──► build_soc_database.py   ──► data/db/soc_database.json
                            ├──► build_gpu_database.py  ──► data/db/gpu_database.json
-                           └──► build_cpu_database.py  ──► data/db/cpu_database.json                                                  
+                           └──► build_cpu_database.py  ──► data/db/cpu_database.json
 ```
 
 
