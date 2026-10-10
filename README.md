@@ -1,22 +1,62 @@
-# 🗄️ ShaderBench Build — Pipeline Pembangunan Database Hardware
+# Build Data Staging csv menjadi json Database
 
-**Kumpulan skrip ETL untuk membangun "kamus spesifikasi" device (SoC, GPU, CPU) yang menjadi fondasi prediksi ShaderBench.**
+mengubah CSV mentah hasil scraping menjadi database hardware, mengubah lembar uji manual
+menjadi sampel terstruktur dimana data tersebut menjadi bahan baku kalibrasi performa ShaderBench
 
-Repository ini berisi tiga skrip inti yang mengubah data mentah hasil scraping benchmark (Nanoreview, TechPowerUp, dll.) menjadi database JSON terstruktur yang langsung dikonsumsi oleh engine prediksi ShaderBench.
-
----
-
-## 🎮 Tentang ShaderBench
-
-**ShaderBench** adalah aplikasi web prediktif yang membantu pemain Minecraft (Bedrock/PE) mengetahui apakah device mereka mampu menjalankan shader tertentu dengan lancar. Aplikasi ini menggunakan pendekatan **provenance-first** dengan menggabungkan:
-
-- **Rumus fisika sederhana**: `fps = TARGET_FPS × gpu_index / (shader_load + BASE)`
-- **Machine Learning** (Random Forest) untuk klasifikasi kategori performa
-- **Koherensi prediksi**: FPS yang ditampilkan selalu sesuai dengan setting yang direkomendasikan
-- **Provenance jujur**: setiap angka memiliki asal-usul yang jelas dan ditandai sebagai terukur/proyeksi
-
-**Repository ini adalah hulu (sumber data)** yang menyuplai "kamus" kapasitas hardware (`gpu_index`, `cpu_index`) agar engine ShaderBench dapat mengenali device yang diinput oleh user dan menghitung prediksi FPS secara akurat.
+## 🌟 Apa itu ShaderBench?
+[ShaderBench](https://ShaderBench.com) adalah alat analisis performa dan rekomendasi setting Minecraft berbasis web. Alih-alih hanya memberikan tebakan, aplikasi ini menggunakan pendekatan provenance-first (jujur terhadap asal-usul data) dan model fisika satu-skalar yang dipadukan dengan Machine Learning (Random Forest).
 
 ---
 
-## 📁 Struktur Folder
+### 🛠️ Komponen Utama
+
+| Skrip | Peran | Input | Output |
+|---|---|---|---|
+| `build_database_soc.py` | Kamus SoC mobile (Android + iOS) | `data/staging/benchmark_soc.csv`, `data/raw/details_cache.json` | `data/db/database_soc.json` |
+| `build_database_gpu.py` | Kamus GPU PC (desktop + laptop) | `data/staging/benchmark_pc_gpu.csv` | `data/db/database_gpu.json` |
+| `build_database_cpu.py` | Kamus CPU PC (desktop + laptop) | `data/staging/benchmark_pc_cpu.csv` | `data/db/database_cpu.json` |
+
+---
+
+> | Repo | URL | Peran |
+> |---|---|---|
+> | **scraper** (ini) | [`Scraper`](https://github.com/wansobriamin/scraper-data-gpu-cpu-soc) | Scrape benchmark mentah |
+> | **convert** | [`convert`](https://github.com/wansobriamin/normalize-convert-raw-to-staging) | Skor mentah → `gpu_index`/`cpu_index` (CSV staging) |
+> | **build** | [`build`](https://github.com/wansobriamin/build-csv-to-json-benchmark-device) | mengubah data CSV staging menjadi file database `.json`  |
+
+
+## CLI
+
+Jalankan dari root backend
+
+```bash
+# 1) siapkan CSV staging
+
+# 2) bangun database hardware
+python -m build.build_soc_database
+python -m build.build_gpu_database
+python -m build.build_cpu_database
+
+```
+
+## Workflow
+
+```
+        [Scraper eksternal]
+                │  CSV mentah benchmark
+                ▼
+        data/staging/*.csv ──► build_soc_database.py   ──► data/db/soc_database.json
+                           ├──► build_gpu_database.py  ──► data/db/gpu_database.json
+                           └──► build_cpu_database.py  ──► data/db/cpu_database.json                                                  
+```
+
+
+---
+
+## Etika & Lisensi
+
+- kode ini bertugas mengubah data mentah hasil scraper menjadi data bersih
+  mengagregasi untuk riset pribadi dan pengembangan ShaderBench.
+- Kode ini disediakan apa adanya (as-is) untuk tujuan edukasi.
+
+Copyright (c) 2026 wansobriamin
