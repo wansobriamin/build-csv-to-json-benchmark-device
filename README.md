@@ -41,7 +41,7 @@ python -m build.build_cpu_database
 
 ## Workflow
 
-```
+```text
         [Scraper eksternal]
                 │  CSV mentah benchmark
                 ▼
