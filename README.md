@@ -33,9 +33,9 @@ Jalankan dari root backend
 # 1) siapkan CSV staging
 
 # 2) bangun database hardware
-python -m build.build_soc_database
-python -m build.build_gpu_database
-python -m build.build_cpu_database
+python -m build.build_database_soc
+python -m build.build_database_gpu
+python -m build.build_database_cpu
 
 ```
 
@@ -45,9 +45,9 @@ python -m build.build_cpu_database
         [Scraper eksternal]
                 │  CSV mentah benchmark
                 ▼
-        data/staging/*.csv ──► build_soc_database.py   ──► data/db/soc_database.json
-                           ├──► build_gpu_database.py  ──► data/db/gpu_database.json
-                           └──► build_cpu_database.py  ──► data/db/cpu_database.json
+        data/staging/*.csv ──► build_database_soc.py   ──► data/db/database_soc.json
+                           ├──► build_database_gpu.py  ──► data/db/database_gpu.json
+                           └──► build_database_cpu.py  ──► data/db/database_cpu.json
 ```
 
 
